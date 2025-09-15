@@ -1,0 +1,25 @@
+### Test property chatbot endpoint
+POST http://localhost:5500/chat
+Content-Type: application/json
+
+{
+  "input": "Do you have houses in Cape Town and Durban?"
+}
+
+###
+
+POST http://localhost:3000/chat
+Content-Type: application/json
+
+{
+  "input": "I want to schedule a phone call with the agent."
+}
+
+###
+
+POST http://localhost:3000/chat
+Content-Type: application/json
+
+{
+  "input": "Can you recommend any properties available this weekend?"
+}
