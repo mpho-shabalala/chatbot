@@ -123,4 +123,3 @@ If the AI cannot assist, it directs users to:
 ## 👨‍💻 Author
 
 Developed by **Mpho @ URACLINE TECH-SPACE**  
-📧 Contact: agent@propertysite.com  
