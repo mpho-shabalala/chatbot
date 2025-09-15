@@ -1,13 +1,14 @@
-import express from "express";
-import cors from "cors";
-import bodyParser from "body-parser";
-import dotenv from "dotenv";
-import { GoogleGenAI } from "@google/genai";
+const express = require("express");
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const dotenv = require("dotenv");
+const { GoogleGenAI } = require("@google/genai");
+const { db } = require("./firebase.cjs");
 
 // Import CJS module in ESM
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const { db } = require("./firebase.cjs");
+// import { createRequire } from "module";
+// const require = createRequire(import.meta.url);
+// const { db } = require("./firebase.cjs");
 
 dotenv.config();
 
@@ -18,14 +19,20 @@ const PORT = process.env.PORT || 3000;
 const ai = new GoogleGenAI({});
 
 // Get all available locations from Firestore
-const getLocations = async () => {
+const getCities = async () => {
   const snapshot = await db.collection("property-data").get();
   const locationsSet = new Set();
   snapshot.docs.forEach(doc => {
     const data = doc.data();
     if (data.location) locationsSet.add(data.location);
   });
-  return Array.from(locationsSet);
+
+  let locations = Array.from(locationsSet);
+  let cities = [];
+  locations.forEach(loc => {
+    cities.push(loc.city);
+  })
+  return cities;
 };
 
 app.use(cors());
@@ -35,12 +42,12 @@ app.post("/chat", async (req, res) => {
   const { input } = req.body;
 
   // Fetch dynamic locations from Firestore
-  const locations = await getLocations();
-  const locationsText = locations.join(", ");
-
+  const cities = await getCities();
+  
+  const citiesText = cities.join(", ");
   const prompt = `
 You are a property website assistant.
-Available locations: ${locationsText}.
+Available locations: ${citiesText}.
 Agent contact: +27-66-123-4567 or agent@propertysite.com.
 You can help users with:
 - Property availability and locations
